@@ -15,14 +15,14 @@ function runParallel(jobs, parallelNum, timeout = 1000) {
         if (!jobs.length) {
             resolve([]);
         }
-        var numberOfWork = 0;
-        var results = [];
+        let numberOfWork = 0;
+        let results = [];
         for (var i = 0; i < parallelNum; i++) {
             start(jobs[numberOfWork], numberOfWork++);
         }
 
         function start(job, index) {
-            var answer = result => finish(result, index);
+            let answer = result => finish(result, index);
             new Promise((resolveJob, rejectJob) => {
                 job().then(resolveJob, rejectJob);
                 setTimeout(rejectJob, timeout, new Error('Error'));
