@@ -3,9 +3,6 @@
 exports.isStar = true;
 exports.runParallel = runParallel;
 
-var numberOfWork = 0;
-var results = [];
-
 /**
 * @param {Array} jobs – функции, которые возвращают промисы
 * @param {Number} parallelNum - число одновременно исполняющихся промисов
@@ -18,9 +15,12 @@ function runParallel(jobs, parallelNum, timeout = 1000) {
         if (!jobs.length) {
             resolve([]);
         }
+        var numberOfWork = 0;
+        var results = [];
         for (var i = 0; i < parallelNum; i++) {
             start(jobs[numberOfWork], numberOfWork++);
         }
+
         function start(job, index) {
             var answer = result => finish(result, index);
             new Promise((resolveJob, rejectJob) => {
@@ -30,6 +30,7 @@ function runParallel(jobs, parallelNum, timeout = 1000) {
                 .then(answer)
                 .catch(answer);
         }
+
         function finish(result, index) {
             results[index] = result;
             if (results.length === jobs.length) {
