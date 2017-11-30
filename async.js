@@ -23,17 +23,16 @@ function runParallel(jobs, parallelNum, timeout = 1000) {
             start(jobs[numberOfWork], numberOfWork++);
         }
 
-        function start(job, jobIndex) {
-            let answer = result => finish(result, jobIndex);
+        function start(job, index) {
+            let answer = result => finish(result, index);
 
             new Promise((resolveJob, rejectJob) => {
                 job().then(resolveJob, rejectJob);
-                setTimeout(rejectJob, timeout, new Error('Error'));
+                setTimeout(rejectJob, timeout, new Error('Promise timeout'));
             })
                 .then(answer)
                 .catch(answer);
         }
-
         function finish(result, index) {
             results[index] = result;
             if (results.length === jobs.length) {
@@ -41,7 +40,6 @@ function runParallel(jobs, parallelNum, timeout = 1000) {
 
                 return;
             }
-
             if (numberOfWork < jobs.length) {
                 start(jobs[numberOfWork], numberOfWork++);
             }
